@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Estacionamento Inteligente</title>
+
+<style>
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
+    text-align:center;
+}
+
+h1{
+    background:#2c3e50;
+    color:white;
+    padding:20px;
+    border-radius:10px;
+}
+
+.container{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:20px;
+    margin-top:20px;
+}
+
+.card{
+    width:300px;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
+    font-size:24px;
+    font-weight:bold;
+}
+
+.livre{
+    background:#d4edda;
+}
+
+.ocupada{
+    background:#f8d7da;
+}
+
+.resumo{
+    margin-top:30px;
+    font-size:22px;
+    font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>🚗 Estacionamento Inteligente</h1>
+
+<div class="container">
+
+    <div id="vaga1" class="card">
+        Carregando...
+    </div>
+
+    <div id="vaga2" class="card">
+        Carregando...
+    </div>
+
+</div>
+
+<div class="resumo">
+
+    <p id="livres">Livres: 0</p>
+
+    <p id="ocupadas">Ocupadas: 0</p>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from
+'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+
+import {
+    getDatabase,
+    ref,
+    onValue
+}
+from
+'https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCHZkUInenKrXOe_dDqRs3fDrRWkV6gwDo",
+  authDomain: "estacionamento-inteligen-47f44.firebaseapp.com",
+  databaseURL: "https://estacionamento-inteligen-47f44-default-rtdb.firebaseio.com",
+  projectId: "estacionamento-inteligen-47f44",
+  storageBucket: "estacionamento-inteligen-47f44.firebasestorage.app",
+  messagingSenderId: "163859192773",
+  appId: "1:163859192773:web:dec426c2e41eabbf1009ac",
+  measurementId: "G-WG315K245Q"
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+const dadosRef = ref(db, '/');
+
+onValue(dadosRef, (snapshot) => {
+
+    const dados = snapshot.val();
+
+    if(!dados) return;
+
+    const status1 = dados.vaga1.status;
+    const status2 = dados.vaga2.status;
+
+    document.getElementById("vaga1").innerHTML =
+        (status1 === "LIVRE" ? "🟢" : "🔴")
+        + "<br>VAGA 1<br>" + status1;
+
+    document.getElementById("vaga2").innerHTML =
+        (status2 === "LIVRE" ? "🟢" : "🔴")
+        + "<br>VAGA 2<br>" + status2;
+
+    document.getElementById("vaga1").className =
+        "card " + (status1 === "LIVRE" ? "livre" : "ocupada");
+
+    document.getElementById("vaga2").className =
+        "card " + (status2 === "LIVRE" ? "livre" : "ocupada");
+
+    document.getElementById("livres").innerHTML =
+        "🟢 Livres: " + dados.resumo.livres;
+
+    document.getElementById("ocupadas").innerHTML =
+        "🔴 Ocupadas: " + dados.resumo.ocupadas;
+
+});
+
+</script>
+
+</body>
+</html>
